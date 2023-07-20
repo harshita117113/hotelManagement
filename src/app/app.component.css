@@ -1,0 +1,48 @@
+.heading {
+    background-color: rgb(69, 55, 55);
+    text-align: left;
+    padding: 15px;
+    font-size: 30px;
+    margin: 0px;
+    color: rgb(222, 201, 82)
+}
+
+body {
+    background-color: rgb(131, 105, 105);
+}
+
+.footer {
+    background-color: rgb(69, 55, 55);
+    font-size: 20px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.box-container {
+    display: flex;
+    flex-direction: row;
+    padding: 30px;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+}
+
+.credit {
+    border-top: solid 2px rgb(194, 167, 167);
+    text-align: center;
+    padding: 10px;
+    color: rgb(194, 167, 167);
+}
+
+.footer a {
+    color: rgb(194, 167, 167)!important;
+    text-decoration: none;
+}
+
+.footer h3 {
+    color: rgb(194, 167, 167);
+    padding-bottom: 10px;
+}

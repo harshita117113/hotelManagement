@@ -1,0 +1,277 @@
+<div *ngIf="showForm==true">
+    <app-corousel></app-corousel>
+</div>
+<div *ngIf="showForm==true" class="homepage">
+    <form class="row g-3" #hotelFilter="ngForm" (ngSubmit)="submit(hotelFilter)">
+        <h3>Choose from the Best Hotels of the City</h3>
+        <div class="col-md-12">
+            <label for="city" class="form-label">City</label>
+            <select id="city" class="form-select" name="city" city required ngModel #city="ngModel">
+              <option disabled >Search City</option>
+              <option>Indore</option>
+              <option>Bhopal</option>
+              <option>Ujjain</option>
+            </select>
+            <span *ngIf="city.touched && city.invalid" style="color: red;">This field is required</span>
+        </div>
+        <div class="col-md-6">
+            <label for="from" class="form-label">From</label>
+            <input type="date" class="form-control" id="from" name="from" [(ngModel)]="strtoday" ngModel #cid="ngModel" #checkin="ngModel" required min="{{today | date: 'yyyy-MM-dd'}}">
+            <span *ngIf="checkin.touched && checkin.invalid" style="color: red;">This field is required</span>
+        </div>
+        <div class="col-md-6">
+            <label for="to" class="form-label">To</label>
+            <input type="date" class="form-control" id="to" name="to" [value]="hotelFilter.value.from" required ngModel #checkout="ngModel" min="{{hotelFilter.value.from}}">
+            <span *ngIf="checkout.touched && checkout.invalid" style="color: red;">This field is required</span>
+        </div>
+        <div class="col-md-4">
+            <label for="rooms" class="form-label">No. of Rooms</label>
+            <input type="number" class="form-control" id="rooms" name="rooms" #rooms="ngModel" required ngModel min="1">
+            <span *ngIf="rooms.touched && rooms.invalid" style="color: red;">This field is required</span>
+        </div>
+        <div class="col-md-4">
+            <label for="adults" class="form-label">No. of Adults</label>
+            <input type="number" class="form-control" id="adults" name="adults" #adults="ngModel" required ngModel min="{{hotelFilter.value.rooms}}">
+            <span *ngIf="adults.touched && adults.invalid" style="color: red;">
+              <span *ngIf="adults.errors?.['required']">This field is required</span>
+            <span *ngIf="adults.errors?.['min']">No. of Adults can't be less than No. of Rooms</span>
+            </span>
+        </div>
+        <div class="col-md-4">
+            <label for="childrens" class="form-label">No. of Childrens</label>
+            <input type="number" class="form-control" id="childrens" name="childrens" #children="ngModel" required ngModel min="0">
+            <span *ngIf="children.touched && children.invalid" style="color: red;">This field is required</span>
+        </div>
+        <div class="col-12">
+            <button [disabled]="hotelFilter.invalid" type="submit" class="btn" style="background-color:antiquewhite;color: rgb(69,55,55);"><b>SEARCH</b></button>
+        </div>
+
+    </form>
+</div>
+
+<div *ngIf="showhotels==true">
+    <div *ngFor="let h of filteredHotels">
+        <div class="card mb-3 hotelcard" style="max-width: 1200px;">
+            <div class="row g-0 " (click)="hotelDetails(h.hid)">
+                <div class="col-md-4">
+                    <img src="{{h.img}}" alt="" style="height: -webkit-fill-available; width: -webkit-fill-available;">
+                </div>
+                <div class="col-md-6 d-flex" style="vertical-align: middle;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{h.name}}</h5>
+                        <p class="card-text">{{h.address}}</p>
+                    </div>
+                </div>
+                <div class="col-md-2" style="display: flex;flex-direction: column;justify-content: center;padding: 16px;">
+                    <p style="margin:16px 0px 4px 0px">Prices Starting From</p>
+                    <h4 style="margin:4px 0px">{{h.roomsType[0].price | currency:'INR'}}</h4>
+                    <p><small class="text-muted">per Night</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showdetails==true" class="hotelDetails">
+    <img src="{{filteredHotels[hotelIdx].img}}" alt="" style="width: 100%; height: 450px;">
+    <div class="row" style="flex-direction: row;margin: 30px;align-items: center;">
+        <div class="col-4">
+            <h1>{{filteredHotels[hotelIdx].name}}</h1>
+            <h3>{{filteredHotels[hotelIdx].address}}</h3>
+        </div>
+        <div class="col det">
+            <h4>Check In</h4>
+            <h6>{{checkin | date:'longDate'}}</h6>
+        </div>
+        <div class="col det">
+            <h4>Check Out</h4>
+            <h6>{{checkout | date:'longDate'}}</h6>
+        </div>
+        <div class="col det">
+            <h6>{{nights}} Nights</h6>
+        </div>
+        <div class="col det">
+            <h6>{{adults}} Adullts</h6>
+            <h6>{{childrens}} Childrens</h6>
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3" style="margin: 30px 0px;">
+        <div class="col" style="padding: 20px;" *ngFor="let rt of filteredHotels[hotelIdx].roomsType;let i=index">
+            <div class="card h-100" style="background-color: antiquewhite;">
+                <img src="assets/hotel1.jpg" class="card-img-top" alt="">
+                <div class="d-flex">
+                    <div class="card-body">
+                        <h3 class="card-title">{{rt.type}}</h3>
+                        <p class="card-text">Available Rooms: {{rt.avlrooms}}</p>
+                    </div>
+                    <div style="display: flex; align-items: left; padding: 16px; flex-direction: column; justify-content: center;">
+                        <h5 class="card-text" style="margin: 0px;">{{rt.price | currency: 'INR'}}</h5>
+                        <p style="margin: 0px;"><small class="text-muted">per Night</small></p>
+                    </div>
+                </div>
+                <div style=" align-items: left; padding: 16px; ">
+                    <h5 class="card-text" style="margin: 0px;">Select Room: </h5>
+                    <div class="d-flex" style="flex-direction: row;">
+                        <span *ngFor="let r of rt.roomsarr;let j=index">
+                            <span *ngIf="r.isBooked==true">
+                              <img src="{{r.icon}}" alt="{{r.roomID}}" style="padding: 10px;">
+                            </span>
+                        <span *ngIf="r.isBooked==false">
+                              <img src="{{r.icon}}" alt="{{r.roomID}}" style="padding: 10px;" (click)="onSelect(j,i)">
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="selectedRooms>0" class="selectedRooms">
+        <h6 style="margin: 0px 10px; padding: 10px;"><b>{{selectedRooms}} Rooms Selected: </b></h6>
+        <div *ngFor="let sr of selectedRoomsArr" class="d-flex row-cols-2" style="margin: 0px 30px;">
+            <div style="text-align: left;">{{sr.roomID}} {{sr.type}}</div>
+            <div style="text-align: right;">{{sr.price|currency:'INR'}}</div>
+        </div>
+        <div class="d-flex row-cols-2 center" style="margin: 0px 30px;">
+            <div style="text-align: left;"><b>Total</b></div>
+            <div style="text-align: right; "><b>{{totalPrice|currency:'INR'}}</b></div>
+        </div>
+        <div style="text-align: center;">
+            <button class="btn " type="submit" style="background-color: rgb(131,105,105);color: antiquewhite;" (click)="bookForm()">BOOK NOW</button>
+        </div>
+    </div>
+
+</div>
+
+<div *ngIf="done==true">
+    <h1 style="text-align: center; color: antiquewhite;">Congratulations! Your Rooms have been booked.</h1>
+</div>
+<div *ngIf="showBooking==true" class="row g-3" class="bookingDetails">
+    <h2>BOOKING DETAILS</h2>
+    <h4>{{filteredHotels[hotelIdx].name}}</h4>
+    <h6 style=" margin:0px 0px 16px 0px">{{filteredHotels[hotelIdx].address}}</h6>
+    <div class="d-flex" style="flex-wrap: wrap;">
+        <div class="col-md-5">
+            <p><b>Check In: </b>{{checkin | date: 'longDate'}}</p>
+        </div>
+        <div class="col-md-5">
+            <p><b>Check Out: </b>{{checkout | date: 'longDate'}}</p>
+        </div>
+        <div class="col-md-2 ">
+            <div>{{nights}} Nights</div>
+        </div>
+        <div class="col-md-5">
+            <p><b>No. of Adults: </b>{{adults}}</p>
+        </div>
+        <div class="col-md-5">
+            <p><b>No. of Childrens: </b>{{childrens}}</p>
+        </div>
+        <div class="col-md-2">
+            <p><b>Rooms: </b>{{selectedRooms}}</p>
+        </div>
+    </div>
+    <div>
+        <table class="table" style="margin: auto; width: 70%; text-align: justify;">
+            <thead>
+                <tr>
+                    <th scope="col">Room ID</th>
+                    <th scope="col">Type</th>
+                    <th scope="col" style="text-align: right;">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let sr of selectedRoomsArr">
+                    <td>{{sr.roomID}}</td>
+                    <td>{{sr.type}}</td>
+                    <td style="text-align: right;">{{sr.price | currency:'INR'}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Sub-total</th>
+                    <td></td>
+                    <td style="text-align: right;">{{totalPrice | currency:'INR'}}</td>
+                </tr>
+                <tr>
+                    <th>Total * {{nights}} Nights</th>
+                    <td></td>
+                    <td style="text-align: right;"><b>{{totalPrice * nights | currency:'INR'}}</b></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<div *ngIf="showBooking==true">
+    <form class="row g-3 " #bookDetails="ngForm" (ngSubmit)="guestDetails(bookDetails)" *ngIf="pGuest=='0'">
+        <h2>Add Details</h2>
+        <div class="col-md-2">
+            <label for="title" class="form-label">Title</label>
+            <select id="title" class="form-select" name="title" required ngModel>
+          <option selected >Mr</option>
+          <option>Mrs</option>
+          <option>Ms</option>
+        </select>
+        </div>
+        <div class="col-md-5">
+            <label for="fname" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="fname" name="fname" ngModel required>
+        </div>
+        <div class="col-md-5">
+            <label for="lname" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lname" name="lname" ngModel required>
+        </div>
+        <div class="col-md-6">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" ngModel required>
+        </div>
+        <div class="col-md-6">
+            <label for="contact" class="form-label">Contact Number</label>
+            <input type="text" class="form-control" id="contact" name="contact" ngModel required>
+        </div>
+        <div>
+            <button type="submit" class="btn" style="background-color: antiquewhite; color: rgb(69,55,55);">SAVE</button>
+        </div>
+    </form>
+</div>
+
+<div *ngIf="pGuest=='1'" class="guestDetails" style="margin: 40px 300px;">
+    <h2>GUESTS DETAILS</h2>
+    <h5><b>Name: </b>{{primaryg.name}}</h5>
+    <h5><b>Email: </b>{{primaryg.email}}</h5>
+    <h5><b>Contact: </b>{{primaryg.contact}}</h5>
+    <br>
+    <ul style="list-style: none;">
+        <li *ngFor="let g of guestList;">
+            <h5>{{g}}</h5>
+        </li>
+    </ul>
+    <div class="d-flex">
+        <button (click)="addon()" class="btn" style="background-color: rgb(69,55,55); color: antiquewhite;">ADD</button>
+        <button (click)="payNow()" class="btn" style="margin:0px 30px;background-color: rgb(69,55,55); color: antiquewhite;">PAY NOW</button>
+    </div>
+</div>
+
+<form *ngIf="addGuest==true" #guest="ngForm" (ngSubmit)="saveGuest(guest)">
+    <div class="row d-flex" style="flex-direction: row;">
+        <div class="col-2" style="margin: 0px 8px;">
+            <label for="title" class="form-label">Title</label>
+            <select id="title" class="form-select" name="title" required ngModel>
+              <option selected >Mr</option>
+              <option>Mrs</option>
+              <option>Ms</option>
+            </select>
+        </div>
+        <div class="col-4" style="margin: 0px 8px">
+            <label for="fname" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="fname" name="fname" ngModel required>
+        </div>
+        <div class="col-4" style="margin: 0px 8px">
+            <label for="lname" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lname" name="lname" ngModel required>
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn" style="margin: 20px 8px 0px;background-color: antiquewhite;color: rgb(69,55,55);">SAVE</button>
+    </div>
+</form>

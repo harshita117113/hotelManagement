@@ -1,0 +1,88 @@
+.homepage {
+    background-image: url(src\assets\bg-img7.jpg);
+    padding: 60px 30px 60px 30px;
+    color: antiquewhite;
+}
+
+.homepage h3 {
+    text-align: center;
+}
+
+.hotelcard {
+    background-color: antiquewhite;
+    padding: 8px;
+    margin: 8px;
+}
+
+form {
+    background-color: rgb(69, 55, 55, 0.8);
+    padding: 30px 100px 60px 100px;
+    margin: 30px 250px;
+    color: antiquewhite;
+    font-weight: 600;
+}
+
+.hotelcard {
+    margin: 30px 100px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hotelDetails {
+    padding: 30px;
+}
+
+h1 {
+    text-transform: uppercase;
+    font-size: 40px;
+    padding-top: 30px;
+}
+
+.det {
+    text-align: center;
+    border: solid 0.2px;
+    border-radius: 5px;
+    background-color: antiquewhite;
+    padding: 10px;
+    margin: 15px;
+    text-transform: uppercase;
+}
+
+.bookingDetails,
+.guestDetails {
+    padding: 30px 100px;
+    margin: 40px 100px;
+    border: solid 2px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, .4) 7px;
+    background-color: antiquewhite;
+}
+
+.bookingDetails table {
+    background-color: antiquewhite;
+}
+
+.guestDetails h5 {
+    padding-left: 30px;
+}
+
+.selectedRooms {
+    border: solid 2px rgb(69, 55, 55);
+    border-radius: 5px;
+    padding: 30px;
+    margin: 0px 300px;
+    background-color: antiquewhite;
+}
+
+th,
+td {
+    background-color: antiquewhite;
+}
+
+thead {
+    border-bottom: black;
+}
