@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { bookRoom } from 'src/app/shared/bookRoom';
 import { hotel } from 'src/app/shared/hotels';
 
@@ -9,7 +10,6 @@ import { hotel } from 'src/app/shared/hotels';
   styleUrls: ['./search-hotel.component.css']
 })
 export class SearchHotelComponent {
-  //constructor(public router: Router){}
   filteredHotels:any;
   hotelIdx:number=0;
   selectedRooms:number=0;
@@ -28,13 +28,15 @@ export class SearchHotelComponent {
   }
   guestList:string[]=[];
 
-  pGuest="-1";
+  pGuest:boolean=false;
   addGuest:boolean=false;
   showhotels: boolean=false;
   showForm: boolean=true;
   showdetails:boolean=false;
-  showBooking:boolean=false;
+  showBookingForm:boolean=false;
+  showBookingDetails:boolean=false;
   done:boolean=false;
+  paid:boolean=false;
 
   today =new Date;
   toString(date:Date){
@@ -42,9 +44,7 @@ export class SearchHotelComponent {
     let mm:number=date.getMonth() +1;
     let dd:number=date.getDate();
     let strtoday=yyyy+"-"+mm+"-"+dd;
-    console.log(date);
-    if(mm<10 && dd<10)
-    {
+    if(mm<10 && dd<10) {
       strtoday=yyyy+"-0"+mm+"-0"+dd;
     }
     else {
@@ -57,7 +57,6 @@ export class SearchHotelComponent {
         strtoday=yyyy+"-"+mm+"-0"+dd;
       }
     }
-    console.log(strtoday);
     return strtoday;
   }
   strtoday=this.toString(this.today);
@@ -599,14 +598,10 @@ export class SearchHotelComponent {
       return arr.city==hotelfilter.value.city;
     }
     this.filteredHotels=this.hotelsList.filter(checkCity);
-
-
-    console.log(hotelfilter.value.from);
     this.checkin=new Date(hotelfilter.value.from);
     //this.defcheckout=(this.checkin + 24*60*60*1000);
     this.checkout=new Date(hotelfilter.value.to);
     this.nights=Math.floor((this.checkout.getTime() - this.checkin.getTime()) / 1000 / 60 / 60 / 24);
-    console.log(this.nights);
     this.rooms=hotelfilter.value.rooms;
     this.adults=hotelfilter.value.adults;
     this.childrens=hotelfilter.value.childrens;
@@ -622,7 +617,6 @@ export class SearchHotelComponent {
       this.showForm=false;
       this.showhotels=true;
     }
-
   }
 
   hotelDetails(id:string)
@@ -674,27 +668,65 @@ export class SearchHotelComponent {
     }
     else{
       this.showdetails=false;
-      this.showBooking=true;
-      this.pGuest="0";
+      this.showBookingDetails=true;
+      this.showBookingForm=true;
     }
   }
 
-  guestDetails(guests:NgForm){
-    this.primaryg.name=guests.value.title+" "+guests.value.fname+" "+guests.value.lname;
-    this.primaryg.email=guests.value.email;
-    this.primaryg.contact=guests.value.contact;
-    this.pGuest="1";
-  }
-  addon(){
-    this.addGuest=true;
-  }
-  payNow(){
+  guestDetails(){
+    this.primaryg.name=this.bookDetails.value.title+" "+this.bookDetails.value.fname+" "+this.bookDetails.value.lname;
+    this.primaryg.email=this.bookDetails.value.email;
+    this.primaryg.contact=this.bookDetails.value.contact;
+    const control=<FormArray>this.bookDetails.controls['guests'];
+    let c=control.value;
+    for(var i=0;i<c.length;i++)
+    {
+      let name=c[i].title+" "+c[i].fname+" "+c[i].lname;
+      this.guestList.push(name);
+    }
+
+    console.log(this.guestList);
+    this.showBookingForm=false;
+    this.pGuest=true;
     this.done=true;
   }
-  saveGuest(guests:NgForm)
-  {
-    let name=guests.value.title+" "+guests.value.fname+" "+guests.value.lname;
-    this.guestList.push(name);
-    this.addGuest=false
+
+  bookDetails:FormGroup;
+  constructor(public router: Router){
+    this.createForm();
+  }
+
+  createForm(){
+      this.bookDetails = new FormGroup({
+      title: new FormControl(""),
+      fname: new FormControl(""),
+      lname: new FormControl(""),
+      email: new FormControl(""),
+      contact: new FormControl(""),
+      guests: new FormArray([
+        new FormGroup({
+          title :new FormControl(''),
+          fname: new FormControl(''),
+          lname: new FormControl(''),
+        })
+      ])
+    })
+  }
+
+  addguest(){
+    const control=<FormArray>this.bookDetails.controls['guests'];
+    control.push(
+      new FormGroup({
+        title :new FormControl(''),
+        fname: new FormControl(''),
+        lname: new FormControl('')
+      })
+    )
+    console.log(control.value);
+  }
+
+  removeGuest(index){
+    const control=<FormArray>this.bookDetails.controls['guests'];
+    control.removeAt(index);
   }
 }

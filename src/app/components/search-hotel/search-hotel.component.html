@@ -146,7 +146,7 @@
 <div *ngIf="done==true">
     <h1 style="text-align: center; color: antiquewhite;">Congratulations! Your Rooms have been booked.</h1>
 </div>
-<div *ngIf="showBooking==true" class="row g-3" class="bookingDetails">
+<div *ngIf="showBookingDetails==true" class="row g-3" class="bookingDetails">
     <h2>BOOKING DETAILS</h2>
     <h4>{{filteredHotels[hotelIdx].name}}</h4>
     <h6 style=" margin:0px 0px 16px 0px">{{filteredHotels[hotelIdx].address}}</h6>
@@ -202,12 +202,12 @@
     </div>
 </div>
 
-<div *ngIf="showBooking==true">
-    <form class="row g-3 " #bookDetails="ngForm" (ngSubmit)="guestDetails(bookDetails)" *ngIf="pGuest=='0'">
-        <h2>Add Details</h2>
+<div *ngIf="showBookingForm==true">
+    <form class="row g-3 " [formGroup]="bookDetails" (ngSubmit)="guestDetails()">
+        <h2>Add Guests Details</h2>
         <div class="col-md-2">
             <label for="title" class="form-label">Title</label>
-            <select id="title" class="form-select" name="title" required ngModel>
+            <select id="title" class="form-select" formControlName="title" required>
           <option selected >Mr</option>
           <option>Mrs</option>
           <option>Ms</option>
@@ -215,27 +215,52 @@
         </div>
         <div class="col-md-5">
             <label for="fname" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="fname" name="fname" ngModel required>
+            <input type="text" class="form-control" id="fname" formControlName="fname" required>
         </div>
         <div class="col-md-5">
             <label for="lname" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="lname" name="lname" ngModel required>
+            <input type="text" class="form-control" id="lname" formControlName="lname" required>
         </div>
         <div class="col-md-6">
             <label for="email" class="form-label">Email Address</label>
-            <input type="email" class="form-control" id="email" name="email" ngModel required>
+            <input type="email" class="form-control" id="email" formControlName="email" required>
         </div>
         <div class="col-md-6">
             <label for="contact" class="form-label">Contact Number</label>
-            <input type="text" class="form-control" id="contact" name="contact" ngModel required>
+            <input type="text" class="form-control" id="contact" formControlName="contact" required>
+        </div>
+        <div formArrayName="guests">
+
+            <div *ngFor="let child of bookDetails.get('guests')['controls'];let i=index" formGroupName="{{i}}" class="row" style="flex-direction: row;align-items: flex-end;">
+                <div class="col-2">
+                    <label for="title" class="form-label">Title</label>
+                    <select id="title" class="form-select" formControlName="title" required>
+                    <option selected >Mr</option>
+                    <option>Mrs</option>
+                    <option>Ms</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                    <label for="fname" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="fname" formControlName="fname" required>
+                </div>
+                <div class="col-4">
+                    <label for="lname" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lname" formControlName="lname" required>
+                </div>
+                <div class="col-2">
+                    <a (click)="removeGuest(i)" class="btn" style="background-color: rgb(69,55,55); color: antiquewhite; padding: 10px;">REMOVE</a>
+                </div>
+            </div>
         </div>
         <div>
-            <button type="submit" class="btn" style="background-color: antiquewhite; color: rgb(69,55,55);">SAVE</button>
+            <a (click)="addguest()" class="btn" style="background-color: rgb(69,55,55); color: antiquewhite;">ADD</a>
+            <button type="submit" class="btn" style="background-color: antiquewhite; color: rgb(69,55,55); margin: 0px 30px;">SAVE</button>
         </div>
     </form>
 </div>
 
-<div *ngIf="pGuest=='1'" class="guestDetails" style="margin: 40px 300px;">
+<div *ngIf="pGuest==true" class="guestDetails" style="margin: 40px 300px;">
     <h2>GUESTS DETAILS</h2>
     <h5><b>Name: </b>{{primaryg.name}}</h5>
     <h5><b>Email: </b>{{primaryg.email}}</h5>
@@ -243,35 +268,8 @@
     <br>
     <ul style="list-style: none;">
         <li *ngFor="let g of guestList;">
-            <h5>{{g}}</h5>
+            <h5 style="padding: 0px;">{{g}}</h5>
         </li>
     </ul>
-    <div class="d-flex">
-        <button (click)="addon()" class="btn" style="background-color: rgb(69,55,55); color: antiquewhite;">ADD</button>
-        <button (click)="payNow()" class="btn" style="margin:0px 30px;background-color: rgb(69,55,55); color: antiquewhite;">PAY NOW</button>
-    </div>
-</div>
 
-<form *ngIf="addGuest==true" #guest="ngForm" (ngSubmit)="saveGuest(guest)">
-    <div class="row d-flex" style="flex-direction: row;">
-        <div class="col-2" style="margin: 0px 8px;">
-            <label for="title" class="form-label">Title</label>
-            <select id="title" class="form-select" name="title" required ngModel>
-              <option selected >Mr</option>
-              <option>Mrs</option>
-              <option>Ms</option>
-            </select>
-        </div>
-        <div class="col-4" style="margin: 0px 8px">
-            <label for="fname" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="fname" name="fname" ngModel required>
-        </div>
-        <div class="col-4" style="margin: 0px 8px">
-            <label for="lname" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="lname" name="lname" ngModel required>
-        </div>
-    </div>
-    <div>
-        <button type="submit" class="btn" style="margin: 20px 8px 0px;background-color: antiquewhite;color: rgb(69,55,55);">SAVE</button>
-    </div>
-</form>
+</div>
